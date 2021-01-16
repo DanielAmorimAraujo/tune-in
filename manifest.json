@@ -9,7 +9,8 @@
     "storage",
     "tabCapture",
     "desktopCapture",
-    "identity"
+    "identity",
+    "notifications"
   ],
   "background": {
     "scripts": ["background.js"],

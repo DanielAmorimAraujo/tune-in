@@ -21,3 +21,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 const start = () => {};
 
 const stop = () => {};
+
+// Notification testing
+chrome.runtime.onMessage.addListener((data) => {
+  var msgID = Math.random();
+  var n = msgID.toString();
+  if (data.type === "notification") {
+    chrome.notifications.create(n, data.options);
+  }
+  console.log(n);
+});
