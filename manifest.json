@@ -1,0 +1,22 @@
+{
+  "name": "TuneIn",
+  "version": "0.0.1",
+  "description": "Tune into your friends' conversations",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "declarativeContent",
+    "storage",
+    "tabCapture",
+    "desktopCapture",
+    "identity"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "page_action": {
+    "default_popup": "popup/popup.html"
+  },
+  "manifest_version": 2
+}
