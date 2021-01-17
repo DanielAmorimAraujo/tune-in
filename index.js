@@ -1,6 +1,6 @@
 let recognizer;
+let trainerDict = ["Spawn", "Go", "Left"];
 const OVERLAP_FACTOR = 0.25;
-let trainer_dict = ['spawn', 'go', 'left']
 
 function predictWord() {
   // Array of words that the recognizer is trained to recognize.
@@ -171,15 +171,13 @@ function listenWord() {
 
   recognizer.listen(
     async ({ scores, spectrogram: { frameSize, data } }) => {
-      console.log(scores)
+      console.log(scores);
       const vals = normalize(data.subarray(-frameSize * NUM_FRAMES));
       const input = tf.tensor(vals, [1, ...INPUT_SHAPE]);
       const probs = model.predict(input);
       const predLabel = probs.argMax(1);
       const winningNum = (await predLabel.data())[0];
-      //console.log(winningNum)
-      document.querySelector("#console").textContent = trainer_dict[winningNum];
-      await moveSlider(predLabel);
+      document.querySelector("#console").textContent = trainerDict[winningNum];
       tf.dispose([input, probs, predLabel]);
     },
     {
@@ -191,9 +189,11 @@ function listenWord() {
 }
 
 async function saveModel() {
-  await model.save('downloads://my-model');
+  await model.save("downloads://my-model");
 }
 
 async function loadModel() {
-  model = await tf.loadLayersModel('https://storage.googleapis.com/tune-in/my-model.json')
+  model = await tf.loadLayersModel(
+    "https://storage.googleapis.com/tune-in/my-model.json"
+  );
 }

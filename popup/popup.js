@@ -24,36 +24,3 @@ stop.onclick = function () {
     }
   );
 };
-
-// Notification testing
-const button = document.createElement("button");
-button.textContent = "Greet me!";
-document.body.insertAdjacentElement("afterbegin", button);
-
-const button2 = document.createElement("button");
-button2.textContent = "Hello";
-document.body.insertAdjacentElement("afterbegin", button2);
-
-button.addEventListener("click", () => {
-  chrome.runtime.sendMessage("", {
-    type: "notification",
-    options: {
-      title: "Just wanted to notify you",
-      message: "How great it is!",
-      iconUrl: "elephant.png",
-      type: "basic",
-    },
-  });
-});
-
-button2.addEventListener("click", () => {
-  chrome.runtime.sendMessage("", {
-    type: "notification",
-    options: {
-      title: "YOOOOOO",
-      message: "How great it is!",
-      iconUrl: "elephant.png",
-      type: "basic",
-    },
-  });
-});
