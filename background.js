@@ -94,7 +94,7 @@ function listenWord() {
         chrome.notifications.create(messageIdStr, {
           title: notification,
           message: "",
-          iconUrl: "elephant.png",
+          iconUrl: "logo.png",
           type: "basic",
           requireInteraction: true,
         });
