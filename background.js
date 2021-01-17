@@ -11,6 +11,11 @@ chrome.runtime.onInstalled.addListener(function () {
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
     chrome.declarativeContent.onPageChanged.addRules([pageConditions]);
   });
+
+  chrome.tabs.create({
+    url: chrome.extension.getURL("home.html"),
+    active: true,
+  });
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -32,7 +37,7 @@ const OVERLAP_FACTOR = 0.25;
 async function app() {
   recognizer = speechCommands.create("BROWSER_FFT");
   await recognizer.ensureModelLoaded();
-  // buildModel();
+  buildModel();
 }
 
 app();
@@ -44,13 +49,13 @@ let model;
 
 async function loadModel() {
   model = await tf.loadLayersModel(
-    "https://storage.googleapis.com/tune-in/my-model.json"
+    "https://storage.googleapis.com/tm-model/1AGEK2zfz/model.json"
   );
 }
 
 loadModel();
 
-/* function buildModel() {
+function buildModel() {
   model = tf.sequential();
   model.add(
     tf.layers.depthwiseConv2d({
@@ -69,7 +74,16 @@ loadModel();
     loss: "categoricalCrossentropy",
     metrics: ["accuracy"],
   });
-} */
+}
+
+function normalize(x) {
+  const mean = -100;
+  const std = 10;
+  return x.map((x) => (x - mean) / std);
+}
+
+let buffer = [];
+const MESSAGE_LENGTH = 10;
 
 function listenWord() {
   console.log("listenword");
@@ -87,16 +101,20 @@ function listenWord() {
       const winningNum = (await predLabel.data())[0];
       console.log(winningNum);
       if (winningNum !== 2) {
-        chrome.runtime.sendMessage("", {
-          type: "notification",
-          options: {
-            title: trainerDict[winningNum],
-            message: "",
-            iconUrl: "elephant.png",
-            type: "basic",
-          },
+        var msgID = Math.random();
+        var n = msgID.toString();
+        // buffer.push(trainerDict[winningNum]);
+        // if (buffer.length >= MESSAGE_LENGTH) {
+        // let notification = buffer.join(" ");
+        chrome.notifications.create(n, {
+          title: trainerDict[winningNum],
+          message: "",
+          iconUrl: "elephant.png",
+          type: "basic",
         });
       }
+      // buffer = [];
+      // }
       tf.dispose([input, probs, predLabel]);
     },
     {
