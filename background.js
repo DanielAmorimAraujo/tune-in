@@ -29,15 +29,24 @@ const start = () => {};
 
 const stop = () => {};
 
+const URL = "https://teachablemachine.withgoogle.com/models/1AGEK2zfz/";
+const checkpointURL = URL + "model.json"; // model topology
+const metadataURL = URL + "metadata.json"; // model metadata
+
 // :D
 let recognizer;
 let trainerDict = ["Spawn", "Go", "Left"];
 const OVERLAP_FACTOR = 0.25;
 
 async function app() {
-  recognizer = speechCommands.create("BROWSER_FFT");
+  recognizer = speechCommands.create(
+    "BROWSER_FFT",
+    undefined,
+    checkpointURL,
+    metadataURL
+  );
   await recognizer.ensureModelLoaded();
-  buildModel();
+  // buildModel();
 }
 
 app();
@@ -47,13 +56,14 @@ const NUM_FRAMES = 43;
 const INPUT_SHAPE = [NUM_FRAMES, 232, 1];
 let model;
 
+/*
 async function loadModel() {
   model = await tf.loadLayersModel(
     "https://storage.googleapis.com/tm-model/1AGEK2zfz/model.json"
   );
 }
 
-loadModel();
+// loadModel();
 
 function buildModel() {
   model = tf.sequential();
@@ -75,6 +85,7 @@ function buildModel() {
     metrics: ["accuracy"],
   });
 }
+*/
 
 function normalize(x) {
   const mean = -100;
@@ -92,6 +103,42 @@ function listenWord() {
     return;
   }
 
+  const classLabels = recognizer.wordLabels();
+
+  recognizer.listen(
+    (result) => {
+      const scores = result.scores; // probability of prediction for each class
+      // render the probability scores per class
+
+      let max = 0;
+      let indexMax = 0;
+
+      for (let i = 0; i < classLabels.length; i++) {
+        if (scores[i] > max) {
+          max = scores[i];
+          indexMax = i;
+        }
+      }
+
+      console.log(classLabels[indexMax]);
+      if (indexMax !== 0) {
+        chrome.notifications.create(n, {
+          title: classLabels[indexMax],
+          message: "",
+          iconUrl: "elephant.png",
+          type: "basic",
+        });
+      }
+    },
+    {
+      includeSpectrogram: true, // in case listen should return result.spectrogram
+      probabilityThreshold: 0.75,
+      invokeCallbackOnNoiseAndUnknown: true,
+      overlapFactor: 0.5, // probably want between 0.5 and 0.75. More info in README
+    }
+  );
+
+  /*
   recognizer.listen(
     async ({ scores, spectrogram: { frameSize, data } }) => {
       const vals = normalize(data.subarray(-frameSize * NUM_FRAMES));
@@ -123,6 +170,7 @@ function listenWord() {
       invokeCallbackOnNoiseAndUnknown: true,
     }
   );
+  */
 }
 
 chrome.runtime.onMessage.addListener((data) => {
