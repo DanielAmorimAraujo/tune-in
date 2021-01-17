@@ -17,6 +17,7 @@
     "persistent": true
   },
   "page_action": {
+    "default_title": "TuneIn",
     "default_popup": "popup/popup.html"
   },
   "manifest_version": 2,
