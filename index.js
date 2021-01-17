@@ -1,4 +1,6 @@
 let recognizer;
+const OVERLAP_FACTOR = 0.25;
+let trainer_dict = ['spawn', 'go', 'left']
 
 function predictWord() {
   // Array of words that the recognizer is trained to recognize.
@@ -25,7 +27,7 @@ async function app() {
 app();
 
 // One frame is ~23ms of audio.
-const NUM_FRAMES = 3;
+const NUM_FRAMES = 43;
 let examples = [];
 
 function collect(label) {
@@ -44,7 +46,7 @@ function collect(label) {
       ).textContent = `${examples.length} examples collected`;
     },
     {
-      overlapFactor: 0.999,
+      overlapFactor: OVERLAP_FACTOR,
       includeSpectrogram: true,
       invokeCallbackOnNoiseAndUnknown: true,
     }
@@ -71,7 +73,7 @@ async function train() {
 
   await model.fit(xs, ys, {
     batchSize: 16,
-    epochs: 10,
+    epochs: 30,
     callbacks: {
       onEpochEnd: (epoch, logs) => {
         document.querySelector("#console").textContent = `Accuracy: ${(
@@ -149,9 +151,49 @@ function listen() {
       tf.dispose([input, probs, predLabel]);
     },
     {
-      overlapFactor: 0.999,
+      overlapFactor: OVERLAP_FACTOR,
       includeSpectrogram: true,
       invokeCallbackOnNoiseAndUnknown: true,
     }
   );
+}
+
+function listenWord() {
+  if (recognizer.isListening()) {
+    recognizer.stopListening();
+    toggleButtons(true);
+    document.getElementById("listen").textContent = "Listen";
+    return;
+  }
+  toggleButtons(false);
+  document.getElementById("listen").textContent = "Stop";
+  document.getElementById("listen").disabled = false;
+
+  recognizer.listen(
+    async ({ scores, spectrogram: { frameSize, data } }) => {
+      console.log(scores)
+      const vals = normalize(data.subarray(-frameSize * NUM_FRAMES));
+      const input = tf.tensor(vals, [1, ...INPUT_SHAPE]);
+      const probs = model.predict(input);
+      const predLabel = probs.argMax(1);
+      const winningNum = (await predLabel.data())[0];
+      //console.log(winningNum)
+      document.querySelector("#console").textContent = trainer_dict[winningNum];
+      await moveSlider(predLabel);
+      tf.dispose([input, probs, predLabel]);
+    },
+    {
+      overlapFactor: OVERLAP_FACTOR,
+      includeSpectrogram: true,
+      invokeCallbackOnNoiseAndUnknown: true,
+    }
+  );
+}
+
+async function saveModel() {
+  await model.save('downloads://my-model');
+}
+
+async function loadModel() {
+  model = await tf.loadLayersModel('https://storage.googleapis.com/tune-in/my-model.json')
 }

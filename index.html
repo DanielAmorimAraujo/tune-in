@@ -4,19 +4,25 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands"></script>
   </head>
   <body>
-    <button id="left" onmousedown="collect(0)" onmouseup="collect(null)">
+    <button id="spawn" onmousedown="collect(0)" onmouseup="collect(null)">
+      Spawn
+    </button>
+    <button id="go" onmousedown="collect(1)" onmouseup="collect(null)">
+      Go
+    </button>
+    <button id="left" onmousedown="collect(2)" onmouseup="collect(null)">
       Left
-    </button>
-    <button id="right" onmousedown="collect(1)" onmouseup="collect(null)">
-      Right
-    </button>
-    <button id="noise" onmousedown="collect(2)" onmouseup="collect(null)">
-      Noise
     </button>
     <br /><br />
     <button id="train" onclick="train()">Train</button>
     <br /><br />
     <button id="listen" onclick="listen()">Listen</button>
+    <br /><br />
+    <button id="LOAD_MODEL" onclick="loadModel()">LOAD THE MODEL FROM DOWNLOADS</button>
+    <br /><br />
+    <button id="SAVE_MODEL" onclick="saveModel()">SAVE THE MODEL</button>
+    <br /><br />
+    <button id="PREDICT_WORD" onclick="listenWord()">PREDICT WORD</button>
     <input type="range" id="output" min="0" max="10" step="0.1" />
     <div id="console"></div>
     <script src="index.js"></script>
