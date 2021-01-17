@@ -1,3 +1,4 @@
+// This code is for Transfer Learning using TensorFlow
 let recognizer;
 let trainerDict = ["spawn", "go", "left"];
 const OVERLAP_FACTOR = 0.25;

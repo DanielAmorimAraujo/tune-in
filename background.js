@@ -7,8 +7,8 @@ var pageConditions = {
   actions: [new chrome.declarativeContent.ShowPageAction()],
 };
 
-chrome.runtime.onInstalled.addListener(function () {
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
     chrome.declarativeContent.onPageChanged.addRules([pageConditions]);
   });
 
@@ -18,8 +18,8 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.msg == "startFunc") start();
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.msg === "startFunc") start();
   if (request.msg === "stopFunc") stop();
 });
 
