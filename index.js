@@ -1,5 +1,5 @@
 let recognizer;
-let trainerDict = ["Spawn", "Go", "Left"];
+let trainerDict = ["spawn", "go", "left"];
 const OVERLAP_FACTOR = 0.25;
 
 function predictWord() {
@@ -171,7 +171,6 @@ function listenWord() {
 
   recognizer.listen(
     async ({ scores, spectrogram: { frameSize, data } }) => {
-      console.log(scores);
       const vals = normalize(data.subarray(-frameSize * NUM_FRAMES));
       const input = tf.tensor(vals, [1, ...INPUT_SHAPE]);
       const probs = model.predict(input);

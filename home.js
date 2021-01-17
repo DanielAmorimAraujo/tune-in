@@ -1,8 +1,9 @@
+// Request permissions for microphone
 navigator.mediaDevices
   .getUserMedia({ audio: true })
   .then(function (stream) {
-    console.log("You let me use your mic!");
+    console.log("Permission granted");
   })
   .catch(function (err) {
-    console.log("No mic for you!");
+    console.log("Permission denied");
   });

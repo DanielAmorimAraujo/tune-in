@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<meta charset="UTF-8" />
 <html>
   <head>
     <link
@@ -7,13 +8,18 @@
       integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
       crossorigin="anonymous"
     />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans&family=Hachi+Maru+Pop&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <h3>TuneIn</h3>
+    <h2 id="title">TuneIn 📻</h2>
     <div>
-      <button class="btn btn-success" id="start">Start</button>
-      <button class="btn btn-danger" id="stop">Stop</button>
+      <button id="start">Let's Get Started!</button>
+      <button id="stop" style="display: none">Time to Log Off...</button>
     </div>
   </body>
   <script src="popup.js"></script>
